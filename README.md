@@ -1,58 +1,199 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 📚 Monitor de Moedas
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Uma aplicação web desenvolvida em Laravel que permite aos usuários autenticados consultar cotações atualizadas de moedas internacionais em tempo real através da **AwesomeAPI** e gerenciar uma trilha de auditoria contendo o histórico completo das pesquisas realizadas.
 
-## About Laravel
+## 🚀 Guia de Instalação do Ambiente de Desenvolvimento
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Escolha a seção correspondente ao seu sistema operacional para configurar o ambiente.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 🪟 Configuração no Windows (Via Laragon + DBeaver)
 
-## Learning Laravel
+O **Laragon** é a ferramenta mais recomendada para Windows, pois já traz o PHP, MySQL e o Apache configurados e isolados de forma limpa.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+#### 1. Instalação dos Softwares
+* **Laragon:** Acesse [laragon.org/download](https://laragon.org/download), baixe a versão **Laragon Full** (com PHP 8.x e MySQL) e siga o instalador padrão.
+* **DBeaver:** Acesse [dbeaver.io/download](https://dbeaver.io/download), baixe o instalador para Windows (`.exe`) e instale-o.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+#### 2. Configuração do Banco de Dados no DBeaver
+1. Abra o Laragon e clique em **Start All** para iniciar os serviços do PHP e MySQL.
+2. Abra o **DBeaver**.
+3. Clique no ícone de tomada no canto superior esquerdo para criar uma nova conexão e escolha **MySQL** ou **MariaDB**.
+4. Defina as configurações padrão do Laragon:
+   * **Host:** `localhost` ou `127.0.0.1`
+   * **Porta:** `3306`
+   * **Database:** *Deixe em branco por enquanto*
+   * **Username:** `root`
+   * **Password:** *Deixe totalmente em branco (padrão do Laragon)*
+5. Clique em **Test Connection**. Se o DBeaver pedir para baixar os drivers, clique em **Download**.
+6. Clique em **Finish**.
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+---
 
-## Agentic Development
+### 🐧 Configuração no Linux (Foco em Arch Linux e derivados)
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+No Linux, faremos a instalação nativa dos pacotes do MariaDB, PHP e DBeaver.
+
+#### 1. Instalação dos Pacotes (Arch Linux)
+Abra o seu terminal e execute os seguintes comandos:
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+# Atualizar o sistema e instalar MariaDB, PHP e DBeaver
+sudo pacman -Syu mariadb php php-sqlite dbeaver
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+#### 2. Configuração e Inicialização do MariaDB
 
-## Contributing
+1. Antes de iniciar o serviço pela primeira vez, instale o diretório de dados do MariaDB:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```Bash
+sudo mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
+```
 
-## Code of Conduct
+2. Inicie e habilite o serviço para rodar junto com o sistema:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```Bash
+sudo systemctl enable --now mariadb
+```
 
-## Security Vulnerabilities
+3. Defina a senha do usuário root do banco:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```Bash
+sudo mysql_secure_installation
+```
 
-## License
+4. Siga os passos na tela definindo uma senha segura para o usuário root.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+#### 3. Ativação do Driver do Banco no PHP (php.ini)
+
+Por padrão, o Arch desativa os drivers de banco de dados. Para ativar:
+
+1. Abra o arquivo de configuração como root:
+
+```Bash
+sudo nano /etc/php/php.ini
+```
+
+Procure pela linha ;extension=pdo_mysql (use Ctrl + W para buscar no nano).
+
+2. Remova o ponto e vírgula (;) do início da linha para que ela fique assim:
+
+```Ini, TOML
+extension=pdo_mysql
+```
+
+3. Salve e feche o arquivo (Ctrl + O, Enter, Ctrl + X).
+
+#### 4. Configuração no DBeaver (Linux)
+
+1. Abra o DBeaver.
+
+2. Crie uma nova conexão escolhendo MariaDB.
+
+3. Configure os campos:
+
+    - Host: 127.0.0.1
+    - Porta: 3306
+    - Username: root
+    - Password: A senha que você definiu no passo mysql_secure_installation
+
+4. Teste a conexão e salve.
+
+## 🛠️ Criação do Banco de Dados (DBeaver)
+
+Com o DBeaver conectado ao seu servidor de banco de dados (seja no Windows ou Linux), siga as etapas abaixo para criar a estrutura sem o uso de Migrations do Laravel:
+
+1. Na barra lateral esquerda do DBeaver, clique com o botão direito em Databases e selecione Create New Database.
+
+2. Dê o nome de currency_db e clique em OK.
+
+3. Dê um duplo clique sobre o currency_db recém-criado para torná-lo o banco ativo.
+
+4. Abra uma nova aba de scripts SQL (SQL Editor -> New SQL Script) e execute o seguinte código completo (Ctrl + A para selecionar tudo e Ctrl + Enter ou Alt + X para rodar):
+
+```SQL
+USE currency_db;
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP NULL DEFAULT NULL,
+    updated_at TIMESTAMP NULL DEFAULT NULL
+);
+
+CREATE TABLE currency_histories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    from_currency VARCHAR(10) NOT NULL,
+    to_currency VARCHAR(10) NOT NULL,
+    bid_value DECIMAL(10, 4) NOT NULL,
+    ask_value DECIMAL(10, 4) NOT NULL,
+    consulted_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP NULL DEFAULT NULL,
+    updated_at TIMESTAMP NULL DEFAULT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+```
+
+## ⚙️ Configuração da Aplicação Laravel
+
+1. No terminal do seu projeto, copie o arquivo de configuração de exemplo:
+
+```Bash
+cp .env.example .env
+```
+
+2. Abra o arquivo .env e ajuste as credenciais do banco de dados e o driver de sessão:
+
+```Snippet de código
+DB_CONNECTION=mariadb
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=currency_db
+DB_USERNAME=root
+DB_PASSWORD=sua_senha_aqui  # Deixe em branco se estiver no Laragon padrão
+
+# Importante para evitar erros de tabelas nativas ausentes:
+SESSION_DRIVER=file
+```
+
+3. Instale as dependências do projeto (caso esteja baixando o repositório do zero):
+
+```Bash
+composer install
+```
+
+4. Gere a chave única da aplicação:
+
+```Bash
+php artisan key:generate
+```
+
+5. Limpe os caches de configuração para garantir a leitura do novo .env:
+
+```Bash
+php artisan config:clear
+```
+
+## 🖥️ Como Utilizar a Aplicação
+
+1. Inicie o servidor embutido do Laravel através do terminal:
+
+```Bash
+php artisan serve
+```
+
+2. Abra o seu navegador e acesse o endereço gerado: http://127.0.0.1:8000
+
+### Fluxo do Sistema:
+
+**Redirecionamento**: A aplicação conta com middleware nativo na Home (/). Caso não exista uma sessão ativa, você será levado de imediato à página de /login.
+
+**Controle de Contas**: Crie seu usuário no formulário da direita (Criar Nova Conta). O sistema realiza o hash seguro da sua senha e te autentica de imediato.
+
+**Consultas de Câmbio**: Na tela principal, selecione um par de moedas disponível no campo de seleção (Ex: Dólar para Real ou Bitcoin para Real) e dispare o botão. O painel exibirá em destaque os valores de Compra e Venda atualizados direto do mercado financeiro.
+
+**Histórico e Auditoria**: Cada busca bem-sucedida grava instantaneamente um registro vinculado à sua conta no MariaDB, listando o valor exato no momento da cotação e o carimbo de data/hora para fins de auditoria corporativa.
